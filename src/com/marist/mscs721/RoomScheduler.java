@@ -30,7 +30,7 @@ import com.google.gson.reflect.TypeToken;
 public class RoomScheduler {
 	protected static Scanner keyboard = new Scanner(System.in);
 	static boolean valid = false;
-	static ArrayList<Room> rooms = new ArrayList<Room>();
+	static ArrayList<Room> rooms = new ArrayList<>();
 
 	/*
 	 * Entry point loops through the menu each menu item is a feature of this
@@ -78,20 +78,16 @@ public class RoomScheduler {
 	 * @return
 	 */
 	private static String exportData(ArrayList<Room> rooms) {
-		// TODO Auto-generated method stub
+
 		String path;
 
 		System.out.println("Please enter path for backup(only location - Do not include file name)");
 		path = validateInput("");
-		// sonObject jsonObject = new JsonObject();
-		// jsonObject = createJSON(rooms);
-		// jsonObject.addProperty(path, path);
-		// String myCurrentDir = System.getProperty("user.dir");
-		// System.out.println(myCurrentDir);
+
 		FileWriter fileWriter;
 		try {
 			fileWriter = new FileWriter(path + "/info.json");
-			// fileWriter.write(jsonObject.toString());
+
 			fileWriter.write(createJSON(rooms));
 			fileWriter.flush();
 			fileWriter.close();
@@ -99,6 +95,7 @@ public class RoomScheduler {
 			return "falied to save file to given location, Please try later";
 
 		}
+
 		return "success";
 	}
 
@@ -110,19 +107,8 @@ public class RoomScheduler {
 	 * @return
 	 */
 	private static String createJSON(ArrayList<Room> rooms) {
-		JsonObject jObj = new JsonObject();
-		/*
-		 * for (Room room : rooms) { JsonObject rm = new JsonObject();
-		 * rm.addProperty("capacity", room.getCapacity()); rm.addProperty("name",
-		 * room.getName()); JsonArray meetings = new JsonArray(); for (Meeting m :
-		 * room.getMeetings()) { JsonObject meeting = new JsonObject();
-		 * meeting.addProperty("startTime", m.getStartTime().toString());
-		 * meeting.addProperty("stopTime", m.getStopTime().toString());
-		 * meeting.addProperty("subject", m.getSubject()); meetings.add(meeting); }
-		 * rm.add("meetings", meetings); jObj.add(room.getName(), rm); }
-		 */
+
 		Gson gson = new Gson();
-		// jObj=gson.toJson(rooms);
 		return gson.toJson(rooms);
 
 	}
@@ -136,7 +122,6 @@ public class RoomScheduler {
 	 * @return
 	 */
 	private static String importData(ArrayList<Room> rooms) {
-		// TODO Auto-generated method stub
 		System.err.println("importing will erase stored data");
 		System.out.println("Please enter path for export(only location - Do not include file name)");
 		String path = validateInput("");
@@ -151,12 +136,11 @@ public class RoomScheduler {
 			String str = new String(data, "UTF-8");
 			processData(str, rooms);
 			System.out.println("file size " + file.length());
-			// processFile();
+
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
+
 			return "failed to import";
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return "failed to import";
 		}
@@ -171,8 +155,7 @@ public class RoomScheduler {
 	 * @param rooms
 	 */
 	private static void processData(String str, ArrayList<Room> rooms) {
-		// TODO Auto-generated method stub
-		ArrayList<Room> newRooms = new ArrayList<Room>();
+		ArrayList<Room> newRooms = new ArrayList<>();
 		Type listType = new TypeToken<ArrayList<Room>>() {
 		}.getType();
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
@@ -182,7 +165,6 @@ public class RoomScheduler {
 			System.out.println(room.getName());
 			rooms.add(room);
 		}
-		// rooms.clear();
 
 	}
 
@@ -305,7 +287,7 @@ public class RoomScheduler {
 	 */
 	protected static String scheduleRoom(ArrayList<Room> roomList) {
 		// No point in creating a schedule when there are no rooms
-		if (roomList.size() < 1) {
+		if (roomList.isEmpty()) {
 
 			return "No rooms available, Please add a room first";
 		}
@@ -337,7 +319,7 @@ public class RoomScheduler {
 		// Outer loop runs till all inner loops pass
 		// All inner loop data is used as one set of data
 		do {
-			//First inner loop that validated Start date and time
+			// First inner loop that validated Start date and time
 			do {
 				System.out.println("Start Date and time? (yyyy-MM-dd HH:mm:ss):");
 				valid = true;
@@ -350,8 +332,7 @@ public class RoomScheduler {
 					System.out.println("Please enter valid date as mentioned");
 					valid = false;
 				}
-				// System.out.println(((sDate.getTime() - (new Date()).getTime()) / 60000));
-				//checks if the start data and time is 30 mins ahead of present time
+				// checks if the start data and time is 30 mins ahead of present time
 				if (null != sDate && (new Date().compareTo(sDate)) > 0
 						&& ((sDate.getTime() - (new Date()).getTime()) / 60000) < 30) { // && ((sDate.getTime() - (new
 																						// Date()).getTime()) / 60000) >
@@ -363,7 +344,7 @@ public class RoomScheduler {
 			} while (!valid);
 			System.out.println("Start date timestamp: " + startDate);
 			Date eDate = null;
-			//Second inner loop that validates end date and time
+			// Second inner loop that validates end date and time
 			do {
 				valid = true;
 
@@ -376,7 +357,7 @@ public class RoomScheduler {
 					System.out.println("Please enter valid date as mentioned");
 					valid = false;
 				}
-				//condition to see if meeting is at least 30min of duration
+				// condition to see if meeting is at least 30min of duration
 				if (null == eDate || ((eDate.getTime() - sDate.getTime()) / 60000) < 30) { // &&
 																							// ((sDate.getTime()
 																							// -
@@ -462,7 +443,7 @@ public class RoomScheduler {
 	 * @return
 	 */
 	private static boolean validateAvailability(Timestamp start, Timestamp end, Room room) {
-		if (room.getMeetings().size() < 1)
+		if (room.getMeetings().isEmpty())
 			return true;
 		for (Meeting meeting : room.getMeetings()) {
 			if (start.after(meeting.getStopTime()) && end.after(meeting.getStopTime()))
