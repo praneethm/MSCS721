@@ -1,5 +1,10 @@
 package com.marist.mscs721;
-
+/**
+ * Bean Class holds room related information
+ * 
+ * @author Praneeth Manubolu
+ * 
+ */
 import java.util.ArrayList;
 
 public class Room {	

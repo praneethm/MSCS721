@@ -1,5 +1,10 @@
 package com.marist.mscs721;
-
+/**
+ * 
+ * Bean class responsible for holding Schedule information 
+ * @author Praneeth Manubolu
+ * 
+ */
 import java.sql.Timestamp;
 
 public class Meeting {

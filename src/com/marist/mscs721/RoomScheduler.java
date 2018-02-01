@@ -1,5 +1,14 @@
 package com.marist.mscs721;
 
+/**
+ * Scheduler class responsible for allocating amd managing rooms
+ * This project is built on code from {@link https://github.com/gildmi/RoomScheduler.git.}
+ * This is a part of assignment for class MSCS721-Software verification and maintainance
+ * 
+ * @author - Praneeth Manubolu
+ * @date Feb 1st 2018
+ **/
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -23,6 +32,10 @@ public class RoomScheduler {
 	static boolean valid = false;
 	static ArrayList<Room> rooms = new ArrayList<Room>();
 
+	/*
+	 * Entry point loops through the menu each menu item is a feature of this
+	 * application
+	 */
 	public static void main(String[] args) {
 		Boolean end = false;
 
@@ -56,13 +69,21 @@ public class RoomScheduler {
 
 	}
 
+	/**
+	 * Feature - Export all the stored data (rooms & schedule) to a json file
+	 * Requires User to specify the destination path This method uses naming
+	 * convention "info.json" to name the file
+	 * 
+	 * @param rooms
+	 * @return
+	 */
 	private static String exportData(ArrayList<Room> rooms) {
 		// TODO Auto-generated method stub
 		String path;
 
 		System.out.println("Please enter path for backup(only location - Do not include file name)");
 		path = validateInput("");
-		JsonObject jsonObject = new JsonObject();
+		// sonObject jsonObject = new JsonObject();
 		// jsonObject = createJSON(rooms);
 		// jsonObject.addProperty(path, path);
 		// String myCurrentDir = System.getProperty("user.dir");
@@ -81,6 +102,13 @@ public class RoomScheduler {
 		return "success";
 	}
 
+	/**
+	 * Helper method for exportData(ArrayList<Room> rooms), responsible for
+	 * generating a JSONString out of the Rooms list
+	 * 
+	 * @param rooms
+	 * @return
+	 */
 	private static String createJSON(ArrayList<Room> rooms) {
 		JsonObject jObj = new JsonObject();
 		/*
@@ -99,6 +127,14 @@ public class RoomScheduler {
 
 	}
 
+	/**
+	 * Take Location of the backup file and restores all the data from the file
+	 * Warning - this feature uses -processData(String str, ArrayList<Room> rooms)
+	 * will delete existing data and overides with the new data.
+	 * 
+	 * @param rooms
+	 * @return
+	 */
 	private static String importData(ArrayList<Room> rooms) {
 		// TODO Auto-generated method stub
 		System.err.println("importing will erase stored data");
@@ -127,6 +163,13 @@ public class RoomScheduler {
 		return null;
 	}
 
+	/**
+	 * Helper function for importData(ArrayList<Room> rooms), Triggered when the
+	 * file is available
+	 * 
+	 * @param str
+	 * @param rooms
+	 */
 	private static void processData(String str, ArrayList<Room> rooms) {
 		// TODO Auto-generated method stub
 		ArrayList<Room> newRooms = new ArrayList<Room>();
@@ -143,6 +186,12 @@ public class RoomScheduler {
 
 	}
 
+	/**
+	 * Feature that displays the schedule for a particular room
+	 * 
+	 * @param roomList
+	 * @return
+	 */
 	protected static String listSchedule(ArrayList<Room> roomList) {
 		String roomName = getRoomName();
 		System.out.println(roomName + " Schedule");
@@ -157,6 +206,11 @@ public class RoomScheduler {
 		return "";
 	}
 
+	/**
+	 * Responsible for displaying and retrieving the function that has to be called
+	 * 
+	 * @return
+	 */
 	protected static int mainMenu() {
 		System.out.println("Main Menu:");
 		System.out.println("  1 - Add a room");
@@ -168,6 +222,7 @@ public class RoomScheduler {
 		System.out.println("  7 - Export data");
 		System.out.println("Enter your selection: ");
 		int result = 0;
+		// Loop runs till a valid input is provided
 		do {
 			valid = true;
 			result = validateInput(1);
@@ -179,9 +234,17 @@ public class RoomScheduler {
 		return result;
 	}
 
+	/**
+	 * Add room functionality
+	 * 
+	 * @param roomList
+	 * @return
+	 */
 	protected static String addRoom(ArrayList<Room> roomList) {
 		System.out.println("Add a room:");
 		String name;
+		// Loop runds till valid input
+		// Validation - room with same name does not exit
 		do {
 			valid = true;
 			name = getRoomName();
@@ -205,9 +268,16 @@ public class RoomScheduler {
 		return "Room '" + newRoom.getName() + "' added successfully!";
 	}
 
+	/**
+	 * Removes a room if present
+	 * 
+	 * @param roomList
+	 * @return
+	 */
 	protected static String removeRoom(ArrayList<Room> roomList) {
 		System.out.println("Remove a room:");
 		int index = findRoomIndex(roomList, getRoomName());
+		// index -1 means that the room is not present
 		if (index == -1)
 			return "Room could not be found";
 		roomList.remove(index);
@@ -227,7 +297,14 @@ public class RoomScheduler {
 		return roomList.size() + " Room(s)";
 	}
 
+	/**
+	 * Schedules a room if the room name is present
+	 * 
+	 * @param roomList
+	 * @return
+	 */
 	protected static String scheduleRoom(ArrayList<Room> roomList) {
+		// No point in creating a schedule when there are no rooms
 		if (roomList.size() < 1) {
 
 			return "No rooms available, Please add a room first";
@@ -237,6 +314,7 @@ public class RoomScheduler {
 
 		String name;
 		System.out.println("Please enter room name");
+		// loops till user enters a room name that exists
 		do {
 
 			valid = true;
@@ -256,7 +334,10 @@ public class RoomScheduler {
 		Timestamp startTimestamp;
 		Timestamp endTimestamp;
 		// Loop to check if scheduled timings clash with previous reservations
+		// Outer loop runs till all inner loops pass
+		// All inner loop data is used as one set of data
 		do {
+			//First inner loop that validated Start date and time
 			do {
 				System.out.println("Start Date and time? (yyyy-MM-dd HH:mm:ss):");
 				valid = true;
@@ -270,6 +351,7 @@ public class RoomScheduler {
 					valid = false;
 				}
 				// System.out.println(((sDate.getTime() - (new Date()).getTime()) / 60000));
+				//checks if the start data and time is 30 mins ahead of present time
 				if (null != sDate && (new Date().compareTo(sDate)) > 0
 						&& ((sDate.getTime() - (new Date()).getTime()) / 60000) < 30) { // && ((sDate.getTime() - (new
 																						// Date()).getTime()) / 60000) >
@@ -281,6 +363,7 @@ public class RoomScheduler {
 			} while (!valid);
 			System.out.println("Start date timestamp: " + startDate);
 			Date eDate = null;
+			//Second inner loop that validates end date and time
 			do {
 				valid = true;
 
@@ -293,6 +376,7 @@ public class RoomScheduler {
 					System.out.println("Please enter valid date as mentioned");
 					valid = false;
 				}
+				//condition to see if meeting is at least 30min of duration
 				if (null == eDate || ((eDate.getTime() - sDate.getTime()) / 60000) < 30) { // &&
 																							// ((sDate.getTime()
 																							// -
@@ -326,6 +410,13 @@ public class RoomScheduler {
 		return "Successfully scheduled meeting!";
 	}
 
+	/**
+	 * Helper function to retrieve room name
+	 * 
+	 * @param roomList
+	 * @param name
+	 * @return
+	 */
 	protected static Room getRoomFromName(ArrayList<Room> roomList, String name) {
 		int location = findRoomIndex(roomList, name);
 		if (location == -1)
@@ -333,6 +424,14 @@ public class RoomScheduler {
 		return roomList.get(location);
 	}
 
+	/**
+	 * Helper function that returns the index of the room in the ArrayList return -1
+	 * if the room is not present
+	 * 
+	 * @param roomList
+	 * @param roomName
+	 * @return
+	 */
 	protected static int findRoomIndex(ArrayList<Room> roomList, String roomName) {
 		int roomIndex = 0;
 		boolean found = false;
@@ -353,6 +452,15 @@ public class RoomScheduler {
 		return validateInput("");
 	}
 
+	/**
+	 * Used by the schedule method - this methods checks if the new dates collides
+	 * with the existing dates
+	 * 
+	 * @param start
+	 * @param end
+	 * @param room
+	 * @return
+	 */
 	private static boolean validateAvailability(Timestamp start, Timestamp end, Room room) {
 		if (room.getMeetings().size() < 1)
 			return true;
@@ -364,6 +472,14 @@ public class RoomScheduler {
 		}
 		return false;
 	}
+
+	/**
+	 * Universal input retriever and validator Basic validation thats unique to all
+	 * inputs
+	 * 
+	 * @param input
+	 * @return
+	 */
 
 	@SuppressWarnings("unchecked")
 	private static <E> E validateInput(E input) {
