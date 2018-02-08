@@ -24,7 +24,6 @@ import java.util.Scanner;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
 public class RoomScheduler {
@@ -35,6 +34,7 @@ public class RoomScheduler {
 	/*
 	 * Entry point loops through the menu each menu item is a feature of this
 	 * application
+	 * mainMenu() - handles input range to fall between 1 and 7
 	 */
 	public static void main(String[] args) {
 		Boolean end = false;
@@ -181,11 +181,17 @@ public class RoomScheduler {
 		Room room = getRoomFromName(roomList, roomName);
 		if (null == room)
 			return "could not find room " + roomName;
+		displayMeeting(room);
+		return "";
+	}
+
+	/**
+	 * display schedule for a room
+	 */
+	private static void displayMeeting(Room room) {
 		for (Meeting m : room.getMeetings()) {
 			System.out.println(m.toString());
 		}
-
-		return "";
 	}
 
 	/**
@@ -288,8 +294,8 @@ public class RoomScheduler {
 	protected static String scheduleRoom(ArrayList<Room> roomList) {
 		// No point in creating a schedule when there are no rooms
 		if (roomList.isEmpty()) {
-
-			return "No rooms available, Please add a room first";
+			System.out.println("No rooms available, Please add a room first");
+			System.out.println(addRoom(rooms));
 		}
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		System.out.println("Schedule a room:");
@@ -376,7 +382,7 @@ public class RoomScheduler {
 			endTimestamp = Timestamp.valueOf(endDate);
 			success = validateAvailability(startTimestamp, endTimestamp, curRoom);
 			if (!success) {
-				System.out.println("Entered timings clash with previous revervations, please enter different timings");
+				System.out.println("Entered timings clash above listed revervations, please enter different timings");
 			}
 
 		} while (!success);
@@ -446,11 +452,13 @@ public class RoomScheduler {
 		if (room.getMeetings().isEmpty())
 			return true;
 		for (Meeting meeting : room.getMeetings()) {
-			if (start.after(meeting.getStopTime()) && end.after(meeting.getStopTime()))
+			if (start.after(meeting.getStopTime()) && end.after(meeting.getStopTime())) {
 				return true;
-			else if (start.before(meeting.getStartTime()) && end.before(meeting.getStartTime()))
+			} else if (start.before(meeting.getStartTime()) && end.before(meeting.getStartTime())) {
 				return true;
+			}
 		}
+		displayMeeting(room);
 		return false;
 	}
 
