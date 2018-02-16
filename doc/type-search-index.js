@@ -1,0 +1,1 @@
+typeSearchIndex = [{"p":"com.marist.mscs721","l":"Meeting"},{"p":"com.marist.mscs721","l":"Room"},{"p":"com.marist.mscs721","l":"RoomScheduler"}]

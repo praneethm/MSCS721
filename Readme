@@ -1,0 +1,32 @@
+RoomScheduler Project 
+
+Project created by Praneeth Manubolu for MSCS721 class 
+Updates please refer to -
+https://github.com/praneethm/MSCS721.git
+
+
+------------------------------------------------------------------
+Installing-
+This is a Maven Java Project and requires below dependencies 
+1) Java 1.6 or later
+2) GSON jar 2.6.2 or later
+
+------------------------------------------------------------------
+
+Starting Project-
+ RoomScheduler.java is the main class for ths project, this is not a webapplication and does not need to be deployed.
+ 
+ Instructions-
+ java -cp <JarFile>.jar RoomScheduler
+ 
+ ------------------------------------------------------------------
+ Open issues-
+ Please follow below link to open or know existing issues
+ https://github.com/praneethm/MSCS721/issues
+ 
+ License-
+ This version of existing project(link mentioned below), all licenses from the parent project apply to this. A copy of license as still been provided
+ in the License.txt file
+ 
+ Parent Project-
+ https://github.com/gildmi/RoomScheduler.git.

@@ -1,0 +1,40 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>MSCS721-roomScheduler</groupId>
+  <artifactId>MSCS721-roomScheduler</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <name>Room Scheduler</name>
+  <description>Project created by Praneeth Manubolu for MSCS721 class Marist college</description>
+  <scm>
+  	<url>https://github.com/praneethm/MSCS721.git</url>
+  </scm>
+  <build>
+    <sourceDirectory>src</sourceDirectory>
+    <resources>
+      <resource>
+        <directory>src</directory>
+        <excludes>
+          <exclude>**/*.java</exclude>
+        </excludes>
+      </resource>
+    </resources>
+    <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.7.0</version>
+        <configuration>
+          <source>1.8</source>
+          <target>1.8</target>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+ <dependencies>
+    <dependency>
+   	 	<groupId>com.google.code.gson</groupId>
+   	 	<artifactId>gson</artifactId>
+    		<version>2.6.2</version>
+</dependency>
+    
+    </dependencies>
+</project>
