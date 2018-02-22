@@ -31,7 +31,7 @@ public class RoomScheduler {
 	static boolean valid = false;
 	static ArrayList<Room> rooms = new ArrayList<>();
 
-	/*
+	/**
 	 * Entry point loops through the menu each menu item is a feature of this
 	 * application
 	 * mainMenu() - handles input range to fall between 1 and 7
@@ -63,6 +63,9 @@ public class RoomScheduler {
 			case 7:
 				System.out.println(exportData(rooms));
 				break;
+			case 8:
+				System.out.println("Application closed");
+				break;
 			}
 
 		}
@@ -77,7 +80,7 @@ public class RoomScheduler {
 	 * @param rooms
 	 * @return
 	 */
-	private static String exportData(ArrayList<Room> rooms) {
+	protected static String exportData(ArrayList<Room> rooms) {
 
 		String path;
 
@@ -106,7 +109,7 @@ public class RoomScheduler {
 	 * @param rooms
 	 * @return
 	 */
-	private static String createJSON(ArrayList<Room> rooms) {
+	protected static String createJSON(ArrayList<Room> rooms) {
 
 		Gson gson = new Gson();
 		return gson.toJson(rooms);
@@ -121,9 +124,9 @@ public class RoomScheduler {
 	 * @param rooms
 	 * @return
 	 */
-	private static String importData(ArrayList<Room> rooms) {
-		System.err.println("importing will erase stored data");
-		System.out.println("Please enter path for export(only location - Do not include file name)");
+	protected static String importData(ArrayList<Room> rooms) {
+		System.out.println("importing will erase stored data");
+		System.out.println("Please enter path for export(only location - include file name)");
 		String path = validateInput("");
 		try {
 			File file = new File(path);
@@ -134,17 +137,19 @@ public class RoomScheduler {
 			fis.read(data);
 			fis.close();
 			String str = new String(data, "UTF-8");
-			processData(str, rooms);
+			String res=processData(str, rooms);
+			if(!res.equalsIgnoreCase("success"))
+				return res;
 			System.out.println("file size " + file.length());
 
 		} catch (FileNotFoundException e) {
 
-			return "failed to import";
+			return "failed to import File not found";
 		} catch (IOException e) {
 			e.printStackTrace();
 			return "failed to import";
 		}
-		return null;
+		return "success";
 	}
 
 	/**
@@ -154,10 +159,11 @@ public class RoomScheduler {
 	 * @param str
 	 * @param rooms
 	 */
-	private static void processData(String str, ArrayList<Room> rooms) {
+	private static String processData(String str, ArrayList<Room> rooms) {
 		ArrayList<Room> newRooms = new ArrayList<>();
 		Type listType = new TypeToken<ArrayList<Room>>() {
 		}.getType();
+		try {
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
 		newRooms = gson.fromJson(str, listType);
 		rooms.clear();
@@ -165,6 +171,11 @@ public class RoomScheduler {
 			System.out.println(room.getName());
 			rooms.add(room);
 		}
+		}
+		catch (Exception e) {
+			return "failed to parse file";
+		}
+		return "success";
 
 	}
 
@@ -208,13 +219,14 @@ public class RoomScheduler {
 		System.out.println("  5 - List Rooms");
 		System.out.println("  6 - Import data");
 		System.out.println("  7 - Export data");
+		System.out.println("  8 - close Application");
 		System.out.println("Enter your selection: ");
 		int result = 0;
 		// Loop runs till a valid input is provided
 		do {
 			valid = true;
 			result = validateInput(1);
-			if (result < 1 || result > 7) {
+			if (result < 1 || result > 8) {
 				System.out.println("Please enter a valid input");
 				valid = false;
 			}

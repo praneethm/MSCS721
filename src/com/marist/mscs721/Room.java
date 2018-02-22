@@ -7,6 +7,11 @@ package com.marist.mscs721;
  */
 import java.util.ArrayList;
 
+/**
+ * 
+ * @author praneeth.manubolu1@marist.edu
+ *
+ */
 public class Room {	
 	
 	private String name;
@@ -51,6 +56,9 @@ public class Room {
 
 	public void setMeetings(ArrayList<Meeting> meetings) {
 		this.meetings = meetings;
+	}
+	public String toString() {
+		return name+"-"+capacity;
 	}
 	
 }
