@@ -6,11 +6,11 @@ public class Helper {
 
 
 	
-	public  String  addRoom(ArrayList<Room> rooms) {
+	public   String  addRoom(ArrayList<Room> rooms) {
 		return RoomScheduler.addRoom(rooms);
 	}
 	
-	public String addMeeting(ArrayList<Room> rooms) {
+	public  String addMeeting(ArrayList<Room> rooms) {
 		RoomScheduler.addRoom(rooms);
 		return RoomScheduler.scheduleRoom(rooms);
 		
@@ -26,7 +26,7 @@ public class Helper {
 		return RoomScheduler.listRooms(rooms);
 	}
 	
-	public String displayMeetings(ArrayList<Room> rooms) {
+	public  String displayMeetings(ArrayList<Room> rooms) {
 		RoomScheduler.addRoom(rooms);
 		RoomScheduler.scheduleRoom(rooms);
 		return RoomScheduler.listSchedule(rooms);

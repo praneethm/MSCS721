@@ -65,6 +65,7 @@ public class RoomScheduler {
 				break;
 			case 8:
 				System.out.println("Application closed");
+				System.exit(0);
 				break;
 			}
 

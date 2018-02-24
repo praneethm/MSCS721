@@ -1,1 +1,1 @@
-packageSearchIndex = [{"l":"com.marist.mscs721"}]
+packageSearchIndex = [{"l":"test.java"}]
