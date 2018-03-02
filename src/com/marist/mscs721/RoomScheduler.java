@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Scanner;
 
+import org.apache.log4j.Logger;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -30,19 +32,21 @@ public class RoomScheduler {
 	protected static Scanner keyboard = new Scanner(System.in);
 	static boolean valid = false;
 	static ArrayList<Room> rooms = new ArrayList<>();
+	final static Logger logger = Logger.getLogger(RoomScheduler.class);
 
 	/**
 	 * Entry point loops through the menu each menu item is a feature of this
-	 * application
-	 * mainMenu() - handles input range to fall between 1 and 7
+	 * application mainMenu() - handles input range to fall between 1 and 7
 	 */
 	public static void main(String[] args) {
+		logger.info("application has started successfully");
 		Boolean end = false;
-
+		logger.debug("Debud mode");
 		while (!end) {
 			switch (mainMenu()) {
 
 			case 1:
+
 				System.out.println(addRoom(rooms));
 				break;
 			case 2:
@@ -64,6 +68,7 @@ public class RoomScheduler {
 				System.out.println(exportData(rooms));
 				break;
 			case 8:
+				logger.info("closing application");
 				System.out.println("Application closed");
 				System.exit(0);
 				break;
@@ -87,7 +92,7 @@ public class RoomScheduler {
 
 		System.out.println("Please enter path for backup(only location - Do not include file name)");
 		path = validateInput("");
-
+		logger.debug("entered path for backup " + path);
 		FileWriter fileWriter;
 		try {
 			fileWriter = new FileWriter(path + "/info.json");
@@ -95,11 +100,13 @@ public class RoomScheduler {
 			fileWriter.write(createJSON(rooms));
 			fileWriter.flush();
 			fileWriter.close();
+			logger.trace("closing filewriter");
 		} catch (Exception e) {
+			logger.error("falied to save file to given location, Please try later");
 			return "falied to save file to given location, Please try later";
 
 		}
-
+		logger.debug("successfully saved data");
 		return "success";
 	}
 
@@ -113,6 +120,7 @@ public class RoomScheduler {
 	protected static String createJSON(ArrayList<Room> rooms) {
 
 		Gson gson = new Gson();
+		logger.debug("creating json for exporting");
 		return gson.toJson(rooms);
 
 	}
@@ -126,9 +134,11 @@ public class RoomScheduler {
 	 * @return
 	 */
 	protected static String importData(ArrayList<Room> rooms) {
+		logger.debug("importing from external file");
 		System.out.println("importing will erase stored data");
 		System.out.println("Please enter path for export(only location - include file name)");
 		String path = validateInput("");
+		logger.debug("file location "+path);
 		try {
 			File file = new File(path);
 			if (file.length() > 32000)
@@ -138,16 +148,17 @@ public class RoomScheduler {
 			fis.read(data);
 			fis.close();
 			String str = new String(data, "UTF-8");
-			String res=processData(str, rooms);
-			if(!res.equalsIgnoreCase("success"))
+			String res = processData(str, rooms);
+			if (!res.equalsIgnoreCase("success"))
 				return res;
 			System.out.println("file size " + file.length());
 
 		} catch (FileNotFoundException e) {
-
+			logger.warn("failed to import File not found");
 			return "failed to import File not found";
 		} catch (IOException e) {
 			e.printStackTrace();
+			logger.fatal("failed to import");
 			return "failed to import";
 		}
 		return "success";
@@ -161,21 +172,23 @@ public class RoomScheduler {
 	 * @param rooms
 	 */
 	private static String processData(String str, ArrayList<Room> rooms) {
+		logger.debug("importing data from external file");
 		ArrayList<Room> newRooms = new ArrayList<>();
 		Type listType = new TypeToken<ArrayList<Room>>() {
 		}.getType();
 		try {
-		Gson gson = new GsonBuilder().setPrettyPrinting().create();
-		newRooms = gson.fromJson(str, listType);
-		rooms.clear();
-		for (Room room : newRooms) {
-			System.out.println(room.getName());
-			rooms.add(room);
-		}
-		}
-		catch (Exception e) {
+			Gson gson = new GsonBuilder().setPrettyPrinting().create();
+			newRooms = gson.fromJson(str, listType);
+			rooms.clear();
+			for (Room room : newRooms) {
+				System.out.println(room.getName());
+				rooms.add(room);
+			}
+		} catch (Exception e) {
+			logger.error("failed to parse file");
 			return "failed to parse file";
 		}
+		logger.debug("import success");
 		return "success";
 
 	}
@@ -190,6 +203,7 @@ public class RoomScheduler {
 		String roomName = getRoomName();
 		System.out.println(roomName + " Schedule");
 		System.out.println("---------------------");
+		logger.debug("displaying meetings for room:"+roomName);
 		Room room = getRoomFromName(roomList, roomName);
 		if (null == room)
 			return "could not find room " + roomName;
@@ -232,6 +246,7 @@ public class RoomScheduler {
 				valid = false;
 			}
 		} while (!valid);
+		logger.debug("user input:"+result);
 		return result;
 	}
 
@@ -242,7 +257,7 @@ public class RoomScheduler {
 	 * @return
 	 */
 	protected static String addRoom(ArrayList<Room> roomList) {
-		System.out.println("Add a room:");
+		logger.debug("Adding room");
 		String name;
 		// Loop runds till valid input
 		// Validation - room with same name does not exit
@@ -256,8 +271,10 @@ public class RoomScheduler {
 			if (!valid)
 				System.out.println("Room name already taken, Please enter a different name");
 		} while (!valid);
+		logger.debug("Adding room: " + name);
 		System.out.println("Room capacity?");
 		int capacity = validateInput(1);
+		logger.debug("Adding room with capacity " + capacity);
 		while (capacity < 1) {
 			System.out.println("room capacity should be greater than 0");
 			capacity = validateInput(1);
@@ -265,7 +282,7 @@ public class RoomScheduler {
 
 		Room newRoom = new Room(name, capacity);
 		roomList.add(newRoom);
-
+		logger.debug("Room added successfully " + name);
 		return "Room '" + newRoom.getName() + "' added successfully!";
 	}
 
@@ -279,9 +296,13 @@ public class RoomScheduler {
 		System.out.println("Remove a room:");
 		int index = findRoomIndex(roomList, getRoomName());
 		// index -1 means that the room is not present
-		if (index == -1)
+		if (index == -1) {
+			logger.debug("entered room does not exitst, so cannot remove room");
 			return "Room could not be found";
+
+		}
 		roomList.remove(index);
+		logger.debug("Room removed successfully!");
 		return "Room removed successfully!";
 	}
 
@@ -290,6 +311,7 @@ public class RoomScheduler {
 		System.out.println("---------------------");
 
 		for (Room room : roomList) {
+			logger.debug(room.getName() + " - " + room.getCapacity());
 			System.out.println(room.getName() + " - " + room.getCapacity());
 		}
 
@@ -306,8 +328,10 @@ public class RoomScheduler {
 	 */
 	protected static String scheduleRoom(ArrayList<Room> roomList) {
 		// No point in creating a schedule when there are no rooms
+		logger.debug("scheduling room");
 		if (roomList.isEmpty()) {
 			System.out.println("No rooms available, Please add a room first");
+			logger.debug("room should be added before adding meeting");
 			System.out.println(addRoom(rooms));
 		}
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -326,6 +350,7 @@ public class RoomScheduler {
 				valid = false;
 			}
 		} while (!valid);
+		logger.debug("meeting will be created in room" + name);
 		Room curRoom = getRoomFromName(roomList, name);
 		String startDate;
 		String endDate;
@@ -361,6 +386,7 @@ public class RoomScheduler {
 				}
 				// tartDate.matches("\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}")
 			} while (!valid);
+			logger.debug("meeting start time:" + startDate);
 			System.out.println("Start date timestamp: " + startDate);
 			Date eDate = null;
 			// Second inner loop that validates end date and time
@@ -391,6 +417,7 @@ public class RoomScheduler {
 					valid = false;
 				} // 2018-02-01 13:00:00
 			} while (!valid);
+			logger.debug("meeting end time:" + endDate);
 			startTimestamp = Timestamp.valueOf(startDate);
 			endTimestamp = Timestamp.valueOf(endDate);
 			success = validateAvailability(startTimestamp, endTimestamp, curRoom);
@@ -404,9 +431,9 @@ public class RoomScheduler {
 		String subject = validateInput("");
 
 		Meeting meeting = new Meeting(startTimestamp, endTimestamp, subject);
-
+		logger.debug("meeting date's are valid");
 		curRoom.addMeeting(meeting);
-
+		logger.debug("Successfully scheduled meeting!");
 		return "Successfully scheduled meeting!";
 	}
 
@@ -443,6 +470,8 @@ public class RoomScheduler {
 			}
 			roomIndex++;
 		}
+		if (roomIndex == -1)
+			logger.debug("room not found");
 
 		return found ? roomIndex : -1;
 	}
@@ -472,6 +501,7 @@ public class RoomScheduler {
 			}
 		}
 		displayMeeting(room);
+		logger.debug("entered dates are not valid");
 		return false;
 	}
 
@@ -494,6 +524,7 @@ public class RoomScheduler {
 					input = (E) keyboard.nextLine();
 				valid = true;
 			} catch (Exception e) {
+				logger.error("entered inout is not valid");
 				System.out.println("Please enter a valid Input");
 			}
 		}
