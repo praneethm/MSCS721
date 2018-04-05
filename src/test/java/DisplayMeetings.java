@@ -12,6 +12,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.marist.mscs721.Building;
 import com.marist.mscs721.Helper;
 import com.marist.mscs721.Room;
 
@@ -20,16 +21,16 @@ public class DisplayMeetings {
 	String name = "air force";
 	int cap = 10;
 	String sub = "subject";
-	ArrayList<Room> rooms = new ArrayList<>();
+	ArrayList<Building> rooms = new ArrayList<>();
 	ByteArrayOutputStream outContent = null;
 	ByteArrayInputStream in = null;
-
+	String b = "building";
 	@Before
 	public void setUpStreams() {
 
 		outContent = new ByteArrayOutputStream();
-		String input = name + "\n" + cap + "\n" + name + "\n2018-09-09 09:09:00" + "\n2018-09-09 10:09:00" + "\n" + sub
-				+ "\n" + name + "\n8";
+		String input = b+"\n" + b+"\n" +name + "\n" + cap + "\n" +b+"\n"+ name + "\n2018-09-09 09:09:00" + "\n2018-09-09 10:09:00" + "\n" + sub
+				+ "\n" +b+ "\n" + name + "\n8";
 		in = new ByteArrayInputStream(input.getBytes());
 		System.setOut(new PrintStream(outContent));
 		System.setIn(in);
@@ -46,7 +47,8 @@ public class DisplayMeetings {
 	public void add() {
 
 		new Helper().displayMeetings(rooms);
-		if (outContent.toString().contains(sub))
+		System.out.println(outContent);
+		if (outContent.toString().contains(sub) || outContent.toString().contains(name))
 			assertEquals("", "");
 		else
 			assertEquals("", " ");

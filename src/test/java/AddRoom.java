@@ -12,49 +12,47 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.marist.mscs721.Building;
 import com.marist.mscs721.Helper;
 import com.marist.mscs721.Room;
 
 public class AddRoom {
-	
+
 	ByteArrayOutputStream outContent;;
-	String name="air force";
-	int cap=10;
+	String name = "air force";
+	int cap = 10;
 	ByteArrayInputStream in;
-	ArrayList<Room> rooms= new ArrayList<>();
-	
+	String b = "building";
+	ArrayList<Building> rooms = new ArrayList<>();
+
 	@Before
 	public void setUpStreams() {
 
 		outContent = new ByteArrayOutputStream();
-		in = new ByteArrayInputStream((name+"\n"+cap).getBytes());
+		in = new ByteArrayInputStream((b+"\n" + b+"\n" + name + "\n" + cap).getBytes());
 
-	    System.setOut(new PrintStream(outContent));
-	    System.setIn(in);
+		System.setOut(new PrintStream(outContent));
+		System.setIn(in);
 
 	}
 
-
 	/**
-	 * Test add Room functionality. 
-	 * input - Room_name Capacity
-	 * Uses Helper class to access protected members of the RoomScheduler.
+	 * Test add Room functionality. input - Room_name Capacity Uses Helper class to
+	 * access protected members of the RoomScheduler.
 	 * 
 	 */
 	@Test
 	public void add() {
-
-		String res=new Helper().addRoom(rooms);
-		//assertEquals(startDeco+name+" - "+cap+endDeco, outContent.toString());
-		assertEquals("Room '"+name+"' added successfully!", res);
-
+		String res = new Helper().addRoom(rooms);
+		// assertEquals(startDeco+name+" - "+cap+endDeco, outContent.toString());
+		assertEquals("Room '" + name + "' added successfully!", res);
 
 	}
-	
+
 	@After
 	public void restoreStreams() {
-	    System.setOut(System.out);
-	    System.setErr(System.err);
+		System.setOut(System.out);
+		System.setErr(System.err);
 		try {
 			outContent.flush();
 			outContent.close();
@@ -66,7 +64,5 @@ public class AddRoom {
 			e.printStackTrace();
 		}
 	}
-	
-
 
 }

@@ -6,47 +6,54 @@ public class Helper {
 
 
 	
-	public   String  addRoom(ArrayList<Room> rooms) {
+	public   String  addRoom(ArrayList<Building> rooms) {
+		RoomScheduler.buildings=rooms;
 		return RoomScheduler.addRoom(rooms);
 	}
 	
-	public  String addMeeting(ArrayList<Room> rooms) {
+	public   String  addBuilding(ArrayList<Building> rooms) {
+		RoomScheduler.buildings=rooms;
+		return RoomScheduler.addBuilding(rooms);
+	}
+	
+	public  String addMeeting(ArrayList<Building> rooms) {
 		RoomScheduler.addRoom(rooms);
 		return RoomScheduler.scheduleRoom(rooms);
 		
 	}
-	public String removeMeeting(ArrayList<Room> rooms) {
-		RoomScheduler.addRoom(rooms);
-		return RoomScheduler.removeRoom(rooms);
-		
+	
+
+	
+	public String displayRooms(ArrayList<Building> rooms) {
+		return RoomScheduler.addRoom(rooms);
+		//return RoomScheduler.listRooms(rooms);
 	}
 	
-	public String displayRooms(ArrayList<Room> rooms) {
-		RoomScheduler.addRoom(rooms);
-		return RoomScheduler.listRooms(rooms);
-	}
-	
-	public  String displayMeetings(ArrayList<Room> rooms) {
+	public  String displayMeetings(ArrayList<Building> rooms) {
 		RoomScheduler.addRoom(rooms);
 		RoomScheduler.scheduleRoom(rooms);
 		return RoomScheduler.listSchedule(rooms);
 	}
 	
-	public String exportData(ArrayList<Room> rooms) {
+	public String exportData(ArrayList<Building> rooms) {
 		RoomScheduler.addRoom(rooms);
 		return RoomScheduler.exportData(rooms);
 	}
-	public String importData(ArrayList<Room> rooms) {
+	public String importData(ArrayList<Building> rooms) {
 		RoomScheduler.addRoom(rooms);
 		RoomScheduler.exportData(rooms);
 		return RoomScheduler.importData(rooms);
 	}
-	public String importData3(ArrayList<Room> rooms) {
+	public String importData3(ArrayList<Building> rooms) {
 		RoomScheduler.addRoom(rooms);
 		return RoomScheduler.importData(rooms);
 	}
-	public String importData2(ArrayList<Room> rooms) {
+	public String importData2(ArrayList<Building> rooms) {
 		return RoomScheduler.importData(rooms);
 	}
+/*	public String removeMeetingArrayList<Building> rooms) {
+		RoomScheduler.addRoom(rooms);
+		return RoomScheduler.removeRoom(rooms);
+	}*/
 
 }

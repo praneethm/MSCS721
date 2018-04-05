@@ -14,6 +14,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.lang.reflect.Type;
 import java.sql.Timestamp;
 import java.text.ParseException;
@@ -32,6 +33,7 @@ public class RoomScheduler {
 	protected static Scanner keyboard = new Scanner(System.in);
 	static boolean valid = false;
 	static ArrayList<Room> rooms = new ArrayList<>();
+	protected static ArrayList<Building> buildings = new ArrayList<>();
 	final static Logger logger = Logger.getLogger(RoomScheduler.class);
 
 	/**
@@ -47,27 +49,33 @@ public class RoomScheduler {
 
 			case 1:
 
-				System.out.println(addRoom(rooms));
+				System.out.println(addRoom(buildings));
 				break;
 			case 2:
-				System.out.println(removeRoom(rooms));
+				System.out.println(removeRoom(buildings));
 				break;
 			case 3:
-				System.out.print(scheduleRoom(rooms));
+				System.out.print(scheduleRoom(buildings));
 				break;
 			case 4:
-				System.out.println(listSchedule(rooms));
+				System.out.println(listSchedule(buildings));
 				break;
 			case 5:
-				System.out.println(listRooms(rooms));
+				System.out.println(listRooms(buildings));
 				break;
 			case 6:
-				System.out.println(importData(rooms));
+				System.out.println(importData(buildings));
 				break;
 			case 7:
-				System.out.println(exportData(rooms));
+				System.out.println(exportData(buildings));
 				break;
 			case 8:
+				System.out.println(addBuilding(buildings));
+				break;
+			case 10:
+				System.out.println(findRoom(buildings));
+				break;
+			case 9:
 				logger.info("closing application");
 				System.out.println("Application closed");
 				System.exit(0);
@@ -76,6 +84,126 @@ public class RoomScheduler {
 
 		}
 
+	}
+	
+	protected static String findRoom(ArrayList<Building> buildings2) {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		String startDate;
+		String endDate;
+		System.out.println("Present timestamp: " + new Date());
+		Date sDate = null;
+		boolean success = false;
+		Timestamp startTimestamp;
+		Timestamp endTimestamp;
+		do {
+			System.out.println("Start Date and time? (yyyy-MM-dd HH:mm:ss):");
+			valid = true;
+
+			startDate = validateInput(" ");
+			try {
+				sdf.setLenient(false);
+				sDate = sdf.parse(startDate);
+			} catch (ParseException e) {
+				System.out.println("Please enter valid date as mentioned");
+				valid = false;
+			}
+			// checks if the start data and time is 30 mins ahead of present time
+			if (null != sDate && (new Date().compareTo(sDate)) > 0
+					&& ((sDate.getTime() - (new Date()).getTime()) / 60000) < 30) { // && ((sDate.getTime() - (new
+																					// Date()).getTime()) / 60000) >
+																					// 30
+				System.out.println("Please enter start date&time  30 mins ahead of present time ");
+				valid = false;
+			}
+			// tartDate.matches("\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}")
+		} while (!valid);
+		Date eDate = null;
+		do {
+			valid = true;
+
+			System.out.println("End Date and time? (yyyy-MM-dd HH:mm:ss):");
+			endDate = validateInput(" ");
+			try {
+				sdf.setLenient(false);
+				eDate = sdf.parse(endDate);
+			} catch (ParseException e) {
+				System.out.println("Please enter valid date as mentioned");
+				valid = false;
+			}
+			// condition to see if meeting is at least 30min of duration
+			if (null == eDate || ((eDate.getTime() - sDate.getTime()) / 60000) < 30) { // &&
+																						// ((sDate.getTime()
+																						// -
+																						// (new
+																						// Date()).getTime())
+																						// /
+																						// 60000)
+																						// >
+																						// 30
+				System.out.println("Please enter end date&time 30 mins ahead of start date "
+						+ ((eDate.getTime() - sDate.getTime()) / 60000));
+				valid = false;
+			} // 2018-02-01 13:00:00
+		} while (!valid);
+		startTimestamp = Timestamp.valueOf(startDate);
+		endTimestamp = Timestamp.valueOf(endDate);
+		for(Building b: buildings) {
+			System.out.println("following rooms are available in building "+b);
+			for(Room room : b.getRooms()) {
+				if(validateAvailability(startTimestamp,endTimestamp,room)) {
+					System.out.println(room+" is available for yout timings");
+				}
+			}
+			
+		}
+		//validateAvailability
+		return "";
+	}
+
+	protected static ArrayList<Room> getRoomsfromBuilding() {
+		if(buildings.size()<1) {
+			System.out.println("no buildings available, please add a building");
+			addBuilding(buildings);
+		}
+		String name;
+		do {
+			valid = false;
+			System.out.println("enter the building name");
+			 name = validateInput(" ");
+			for (Building tmp : buildings) {
+				logger.info("comparing with "+tmp.getName());
+				if (tmp.getName().equalsIgnoreCase(name)) {
+					logger.info("found matching building");
+					return tmp.getRooms();
+				}
+			}
+				System.out.println("building does not exist");
+		} while (true);
+		
+	}
+	
+
+	protected static String addBuilding(ArrayList<Building> buildings) {
+		// TODO Auto-generated method stub
+		Building holder =new Building();
+		String name;
+		do {
+			valid = true;
+			System.out.println("Please enter the name of the building");
+			name = validateInput(" ");
+			for (Building building : buildings) {
+				if (building.getName().equalsIgnoreCase(name))
+					valid = false;
+			}
+			if (!valid)
+				System.out.println("building name already taken, pleas enter different building name");
+		} while (!valid);
+		holder.setName(name);
+		holder.setRooms(new ArrayList());
+		buildings.add(holder);
+		
+		return "added building "+name;
+		
 	}
 
 	/**
@@ -86,18 +214,18 @@ public class RoomScheduler {
 	 * @param rooms
 	 * @return
 	 */
-	protected static String exportData(ArrayList<Room> rooms) {
+	protected static String exportData(ArrayList<Building> tmp) {
 
 		String path;
 
 		System.out.println("Please enter path for backup(only location - Do not include file name)");
-		path = validateInput("");
+		path = validateInput(" ");
 		logger.debug("entered path for backup " + path);
 		FileWriter fileWriter;
 		try {
 			fileWriter = new FileWriter(path + "/info.json");
 
-			fileWriter.write(createJSON(rooms));
+			fileWriter.write(createJSON(tmp));
 			fileWriter.flush();
 			fileWriter.close();
 			logger.trace("closing filewriter");
@@ -117,11 +245,11 @@ public class RoomScheduler {
 	 * @param rooms
 	 * @return
 	 */
-	protected static String createJSON(ArrayList<Room> rooms) {
+	protected static String createJSON(ArrayList<Building> tmp) {
 
 		Gson gson = new Gson();
 		logger.debug("creating json for exporting");
-		return gson.toJson(rooms);
+		return gson.toJson(tmp);
 
 	}
 
@@ -133,11 +261,11 @@ public class RoomScheduler {
 	 * @param rooms
 	 * @return
 	 */
-	protected static String importData(ArrayList<Room> rooms) {
+	protected static String importData(ArrayList<Building> tmp) {
 		logger.debug("importing from external file");
 		System.out.println("importing will erase stored data");
 		System.out.println("Please enter path for export(only location - include file name)");
-		String path = validateInput("");
+		String path = validateInput(" ");
 		logger.debug("file location "+path);
 		try {
 			File file = new File(path);
@@ -148,7 +276,7 @@ public class RoomScheduler {
 			fis.read(data);
 			fis.close();
 			String str = new String(data, "UTF-8");
-			String res = processData(str, rooms);
+			String res = processData(str, tmp);
 			if (!res.equalsIgnoreCase("success"))
 				return res;
 			System.out.println("file size " + file.length());
@@ -171,18 +299,18 @@ public class RoomScheduler {
 	 * @param str
 	 * @param rooms
 	 */
-	private static String processData(String str, ArrayList<Room> rooms) {
+	private static String processData(String str, ArrayList<Building> building) {
 		logger.debug("importing data from external file");
-		ArrayList<Room> newRooms = new ArrayList<>();
-		Type listType = new TypeToken<ArrayList<Room>>() {
+		ArrayList<Building> newBuildings = new ArrayList<>();
+		Type listType = new TypeToken<ArrayList<Building>>() {
 		}.getType();
 		try {
 			Gson gson = new GsonBuilder().setPrettyPrinting().create();
-			newRooms = gson.fromJson(str, listType);
-			rooms.clear();
-			for (Room room : newRooms) {
-				System.out.println(room.getName());
-				rooms.add(room);
+			newBuildings = gson.fromJson(str, listType);
+			buildings.clear();
+			for (Building holder : newBuildings) {
+				System.out.println(holder.getName());
+				buildings.add(holder);
 			}
 		} catch (Exception e) {
 			logger.error("failed to parse file");
@@ -199,12 +327,15 @@ public class RoomScheduler {
 	 * @param roomList
 	 * @return
 	 */
-	protected static String listSchedule(ArrayList<Room> roomList) {
+	protected static String listSchedule(ArrayList<Building> tmp) {
+		if(tmp.size()<1)
+			return "no buildings or rooms";
+		rooms = getRoomsfromBuilding();
 		String roomName = getRoomName();
 		System.out.println(roomName + " Schedule");
 		System.out.println("---------------------");
 		logger.debug("displaying meetings for room:"+roomName);
-		Room room = getRoomFromName(roomList, roomName);
+		Room room = getRoomFromName(rooms, roomName);
 		if (null == room)
 			return "could not find room " + roomName;
 		displayMeeting(room);
@@ -234,14 +365,16 @@ public class RoomScheduler {
 		System.out.println("  5 - List Rooms");
 		System.out.println("  6 - Import data");
 		System.out.println("  7 - Export data");
-		System.out.println("  8 - close Application");
+		System.out.println("  8 - Add a building");
+		System.out.println("  9 - close Application");
+		System.out.println("  10 - find available rooms");
 		System.out.println("Enter your selection: ");
 		int result = 0;
 		// Loop runs till a valid input is provided
 		do {
 			valid = true;
 			result = validateInput(1);
-			if (result < 1 || result > 8) {
+			if (result < 1 || result > 10) {
 				System.out.println("Please enter a valid input");
 				valid = false;
 			}
@@ -256,15 +389,16 @@ public class RoomScheduler {
 	 * @param roomList
 	 * @return
 	 */
-	protected static String addRoom(ArrayList<Room> roomList) {
+	protected static String addRoom(ArrayList<Building> b) {
 		logger.debug("Adding room");
 		String name;
 		// Loop runds till valid input
 		// Validation - room with same name does not exit
+		rooms=getRoomsfromBuilding();
 		do {
 			valid = true;
 			name = getRoomName();
-			for (Room room : roomList) {
+			for (Room room : rooms) {
 				if (room.getName().equalsIgnoreCase(name))
 					valid = false;
 			}
@@ -281,7 +415,7 @@ public class RoomScheduler {
 		}
 
 		Room newRoom = new Room(name, capacity);
-		roomList.add(newRoom);
+		rooms.add(newRoom);
 		logger.debug("Room added successfully " + name);
 		return "Room '" + newRoom.getName() + "' added successfully!";
 	}
@@ -292,32 +426,44 @@ public class RoomScheduler {
 	 * @param roomList
 	 * @return
 	 */
-	protected static String removeRoom(ArrayList<Room> roomList) {
+	protected static String removeRoom(ArrayList<Building> tmp) {
+		if(buildings.size()<1) {
+			return "no buildings to remove room from";
+		}
+		rooms=getRoomsfromBuilding();
+		if(rooms.size()<1)
+			return "no rooms in the building";
+		System.out.println("");
 		System.out.println("Remove a room:");
-		int index = findRoomIndex(roomList, getRoomName());
+		
+		int index = findRoomIndex(rooms, getRoomName());
 		// index -1 means that the room is not present
 		if (index == -1) {
 			logger.debug("entered room does not exitst, so cannot remove room");
 			return "Room could not be found";
 
 		}
-		roomList.remove(index);
+		rooms.remove(index);
 		logger.debug("Room removed successfully!");
 		return "Room removed successfully!";
 	}
 
-	protected static String listRooms(ArrayList<Room> roomList) {
+	protected static String listRooms(ArrayList<Building> tmp) {
 		System.out.println("Room Name - Capacity");
 		System.out.println("---------------------");
+		rooms=getRoomsfromBuilding();
 
-		for (Room room : roomList) {
+		for (Room room : rooms) {
 			logger.debug(room.getName() + " - " + room.getCapacity());
 			System.out.println(room.getName() + " - " + room.getCapacity());
+			for(Meeting meeting :room.getMeetings()) {
+				System.out.println(meeting.toString());
+			}
 		}
 
 		System.out.println("---------------------");
 
-		return roomList.size() + " Room(s)";
+		return rooms.size() + " Room(s)";
 	}
 
 	/**
@@ -326,32 +472,40 @@ public class RoomScheduler {
 	 * @param roomList
 	 * @return
 	 */
-	protected static String scheduleRoom(ArrayList<Room> roomList) {
+	protected static String scheduleRoom(ArrayList<Building> tmp) {
 		// No point in creating a schedule when there are no rooms
+/*		if(buildings.size()<1) {
+			return "no buildings to remove room from";
+		}
+		
+		rooms=getRoomsfromBuilding();
 		logger.debug("scheduling room");
-		if (roomList.isEmpty()) {
+		if (rooms.isEmpty()) {
 			System.out.println("No rooms available, Please add a room first");
 			logger.debug("room should be added before adding meeting");
-			System.out.println(addRoom(rooms));
+			System.out.println(addRoom(buildings));
 		}
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		
 		System.out.println("Schedule a room:");
-
+*/
 		String name;
-		System.out.println("Please enter room name");
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		//System.out.println("Please enter room name");
 		// loops till user enters a room name that exists
 		do {
 
 			valid = true;
+			System.out.println("enter building name");
+			rooms=getRoomsfromBuilding();
 			name = getRoomName();
-			int index = findRoomIndex(roomList, name);
+			int index = findRoomIndex(rooms, name);
 			if (index == -1) {
 				System.out.println("Room name does not exist, Please enter a valid room name");
 				valid = false;
 			}
 		} while (!valid);
 		logger.debug("meeting will be created in room" + name);
-		Room curRoom = getRoomFromName(roomList, name);
+		Room curRoom = getRoomFromName(rooms, name);
 		String startDate;
 		String endDate;
 		System.out.println("Present timestamp: " + new Date());
@@ -368,7 +522,7 @@ public class RoomScheduler {
 				System.out.println("Start Date and time? (yyyy-MM-dd HH:mm:ss):");
 				valid = true;
 
-				startDate = validateInput("");
+				startDate = validateInput(" ");
 				try {
 					sdf.setLenient(false);
 					sDate = sdf.parse(startDate);
@@ -394,7 +548,7 @@ public class RoomScheduler {
 				valid = true;
 
 				System.out.println("End Date and time? (yyyy-MM-dd HH:mm:ss):");
-				endDate = validateInput("");
+				endDate = validateInput(" ");
 				try {
 					sdf.setLenient(false);
 					eDate = sdf.parse(endDate);
@@ -428,7 +582,7 @@ public class RoomScheduler {
 		} while (!success);
 
 		System.out.println("Subject?");
-		String subject = validateInput("");
+		String subject = validateInput(" ");
 
 		Meeting meeting = new Meeting(startTimestamp, endTimestamp, subject);
 		logger.debug("meeting date's are valid");
@@ -478,7 +632,7 @@ public class RoomScheduler {
 
 	protected static String getRoomName() {
 		System.out.println("Room Name?");
-		return validateInput("");
+		return validateInput(" ");
 	}
 
 	/**
@@ -530,5 +684,6 @@ public class RoomScheduler {
 		}
 		return input;
 	}
+
 
 }

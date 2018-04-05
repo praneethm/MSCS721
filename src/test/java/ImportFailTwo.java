@@ -12,6 +12,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.marist.mscs721.Building;
 import com.marist.mscs721.Helper;
 import com.marist.mscs721.Room;
 
@@ -20,7 +21,8 @@ public class ImportFailTwo {
 	Room room;
 	String name="air force";
 	int cap=10;
-	ArrayList<Room> rooms= new ArrayList<>();
+	String b = "building";
+	ArrayList<Building> rooms = new ArrayList<>();
 	private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
 	ByteArrayInputStream in = new ByteArrayInputStream((System.getProperty("user.dir")+"/info1.json").getBytes());
 	

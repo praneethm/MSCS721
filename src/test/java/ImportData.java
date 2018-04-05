@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.marist.mscs721.Building;
 import com.marist.mscs721.Helper;
 import com.marist.mscs721.Room;
 
@@ -19,9 +20,10 @@ public class ImportData {
 	Room room;
 	String name="air force";
 	int cap=10;
-	ArrayList<Room> rooms= new ArrayList<>();
+	String b = "building";
+	ArrayList<Building> rooms = new ArrayList<>();
 	private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-	ByteArrayInputStream in = new ByteArrayInputStream((name+"\n"+cap+"\n"+ System.getProperty("user.dir")+"\n"+System.getProperty("user.dir")+"/info.json").getBytes());
+	ByteArrayInputStream in = new ByteArrayInputStream((b+"\n" + b+"\n" +name+"\n"+cap+"\n"+ System.getProperty("user.dir")+"\n"+System.getProperty("user.dir")+"/info.json").getBytes());
 	
 	
 	@Before

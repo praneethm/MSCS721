@@ -12,13 +12,14 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.marist.mscs721.Building;
 import com.marist.mscs721.Helper;
 import com.marist.mscs721.Room;
 
 public class AddMeetingTest {
 
 	Room room;
-	ArrayList<Room> rooms = new ArrayList<>();
+	ArrayList<Building> rooms = new ArrayList<>();
 	 ByteArrayOutputStream outContent = null;
 	 ByteArrayInputStream in = null;
 	@Before
@@ -26,10 +27,10 @@ public class AddMeetingTest {
 
 		String name = "air force";
 		int cap = 10;
-
+		String b = "building";
 		outContent = new ByteArrayOutputStream();
 		//input
-		String input = name + "\n" + cap + "\n" + name + "\n2018-09-09 09:09:00" + "\n2018-09-09 10:09:00"
+		String input = b+"\n" + b+"\n" +name + "\n" + cap + "\n" +b+"\n"+ name + "\n2018-09-09 09:09:00" + "\n2018-09-09 10:09:00"
 				+ "\nsubject";
 		in = new ByteArrayInputStream(input.getBytes());
 		//Simulation user input

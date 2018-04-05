@@ -12,6 +12,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.marist.mscs721.Building;
 import com.marist.mscs721.Helper;
 import com.marist.mscs721.Room;
 
@@ -21,9 +22,10 @@ public class ExportData {
 	Room room;
 	String name="air force";
 	int cap=10;
-	ArrayList<Room> rooms= new ArrayList<>();
+	ArrayList<Building> rooms = new ArrayList<>();
 	private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-	ByteArrayInputStream in = new ByteArrayInputStream((name+"\n"+cap+"\n"+ System.getProperty("user.dir")).getBytes());
+	String b = "building";
+	ByteArrayInputStream in = new ByteArrayInputStream((b+"\n" + b+"\n" +name+"\n"+cap+"\n"+ System.getProperty("user.dir")).getBytes());
 	
 	
 	@Before

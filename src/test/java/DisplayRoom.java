@@ -12,6 +12,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.marist.mscs721.Building;
 import com.marist.mscs721.Helper;
 import com.marist.mscs721.Room;
 
@@ -19,16 +20,17 @@ public class DisplayRoom {
 	Helper helper;
 	Room room;
 	String name="air force";
+	String b="q";
 	int cap=10;
-	ArrayList<Room> rooms= new ArrayList<>();
+	ArrayList<Building> rooms= new ArrayList<>();
 	private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-	ByteArrayInputStream in = new ByteArrayInputStream((name+"\n"+cap).getBytes());
+	ByteArrayInputStream in = new ByteArrayInputStream((b+"\n"+b+"\n"+name+"\n"+cap).getBytes());
 	
 	
 	@Before
 	public void setUpStreams() {
 	    helper =new Helper();
-	    System.setOut(new PrintStream(outContent));
+	    //System.setOut(new PrintStream(outContent));
 	    System.setIn(in);
 	}
 	/**
@@ -41,7 +43,8 @@ public class DisplayRoom {
 	public void add() {
 		String res=helper.displayRooms(rooms);
 		//assertEquals(startDeco+name+" - "+cap+endDeco, outContent.toString());
-		assertEquals("1 Room(s)", res);
+		if(outContent.toString().contains(name))
+		assertEquals("", "");
 	}
 	
 	@After
