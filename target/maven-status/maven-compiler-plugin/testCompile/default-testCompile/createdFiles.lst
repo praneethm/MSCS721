@@ -6,5 +6,6 @@ test/java/Exportfail.class
 test/java/ImportFailTwo.class
 test/java/ExportData.class
 test/java/ImportFail.class
+test/java/AddBuilding.class
 test/java/DisplayRoom.class
 test/java/AddRoom.class

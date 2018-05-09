@@ -6,7 +6,11 @@ package com.marist.mscs721;
  * 
  */
 import java.sql.Timestamp;
-
+/**
+ * Praneeth Manubolu Custom License
+ *
+ * Free to use
+ */
 public class Meeting {
 	
 	private Timestamp startTime = null;

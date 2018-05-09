@@ -1,7 +1,11 @@
 package com.marist.mscs721;
 
 import java.util.ArrayList;
-
+/**
+ * Praneeth Manubolu Custom License
+ *
+ * Free to use
+ */
 public class Building {
 
 	private String name;

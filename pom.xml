@@ -34,6 +34,11 @@
 		</resources>
 		<plugins>
 			<plugin>
+				<groupId>org.pitest</groupId>
+				<artifactId>pitest-maven</artifactId>
+				<version>1.4.0</version>
+			</plugin>
+			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.7.0</version>
 				<configuration>
@@ -57,8 +62,46 @@
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.rat</groupId>
+				<artifactId>apache-rat-plugin</artifactId>
+				<version>0.12</version>
+				<configuration>
+					<excludes>
+						<!-- These files does not have license headers because they are used 
+							to test license headers -->
+						<exclude>target/**</exclude>
+						<exclude>doc/**</exclude>
+						<exclude>bin/**</exclude>
+						<exclude>src/test/**</exclude>
+						<exclude>License</exclude>
+						<exclude>Manifest.txt</exclude>
+						<exclude>pom.xml</exclude>
+						<exclude>Readme</exclude>
+						<exclude>sonar-project.properties</exclude>
+					</excludes>
+					<licenses>
+						<license
+							implementation="org.apache.rat.analysis.license.SimplePatternBasedLicense">
+							<licenseFamilyCategory>YASL1</licenseFamilyCategory>
+							<licenseFamilyName>Praneeth custome license thats free to use</licenseFamilyName>
+							<notes></notes>
+							<patterns>
+								<pattern>Praneeth Manubolu Custom License</pattern>
+							</patterns>
+						</license>
+					</licenses>
+					<licenseFamilies>
+						<licenseFamily implementation="org.apache.rat.license.SimpleLicenseFamily">
+							<familyName>Praneeth custome license thats free to use</familyName>
+						</licenseFamily>
+					</licenseFamilies>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
+
+
 	<dependencies>
 		<!-- https://mvnrepository.com/artifact/log4j/log4j -->
 		<dependency>
@@ -66,11 +109,15 @@
 			<artifactId>log4j</artifactId>
 			<version>1.2.17</version>
 		</dependency>
-
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
 			<artifactId>gson</artifactId>
 			<version>2.6.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.rat</groupId>
+			<artifactId>apache-rat-plugin</artifactId>
+			<version>0.12</version>
 		</dependency>
 
 		<dependency>

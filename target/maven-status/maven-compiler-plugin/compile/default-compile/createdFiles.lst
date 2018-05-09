@@ -3,12 +3,15 @@ com/marist/mscs721/Helper.class
 com/marist/mscs721/RoomScheduler$1.class
 com/marist/mscs721/RoomScheduler.class
 test/java/ImportFailTwo.class
+test/java/AddBuilding.class
 test/java/DisplayRoom.class
 test/java/DisplayMeetings.class
+com/marist/mscs721/Building.class
 test/java/ImportData.class
 test/java/RemoveRoom.class
 test/java/Exportfail.class
 com/marist/mscs721/Room.class
 test/java/ExportData.class
 test/java/ImportFail.class
+com/marist/mscs721/Meeting.class
 test/java/AddRoom.class

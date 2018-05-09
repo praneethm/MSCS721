@@ -1,6 +1,12 @@
 package com.marist.mscs721;
 
 /**
+ * Praneeth Manubolu Custom License
+ *
+ * Free to use
+ */
+
+/**
  * Scheduler class responsible for allocating amd managing rooms
  * This project is built on code from {@link https://github.com/gildmi/RoomScheduler.git.}
  * This is a part of assignment for class MSCS721-Software verification and maintainance
@@ -269,8 +275,6 @@ public class RoomScheduler {
 		logger.debug("file location "+path);
 		try {
 			File file = new File(path);
-			if (file.length() > 32000)
-				return "File too large to process";
 			FileInputStream fis = new FileInputStream(file);
 			byte[] data = new byte[(int) file.length()];
 			fis.read(data);

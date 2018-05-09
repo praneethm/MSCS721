@@ -1,9 +1,8 @@
 package com.marist.mscs721;
 /**
- * Bean Class holds room related information
- * 
- * @author Praneeth Manubolu
- * 
+ * Praneeth Manubolu Custom License
+ *
+ * Free to use
  */
 import java.util.ArrayList;
 
